@@ -100,37 +100,41 @@ def retracePath(children, goal):
 
 def breadthFirstSearch(problem):
   queue = util.Queue()
-  queue.push(problem.getStartState())
-  children = {}
-  visited = {}
+  queue.push((problem.getStartState(), []))
+  explored = []
   while not queue.isEmpty():
-    current = queue.pop()
-    if not current in visited:
-      visited[current] = True
-      for successor in problem.getSuccessors(current):
-        if not successor[0] in visited:
-          children[successor[0]] = (current, successor[1])
-        queue.push(successor[0])
-        if problem.isGoalState(successor[0]):
-          return retracePath(children, successor[0])
+    current, cameFrom = queue.pop()
+
+    if problem.isGoalState(current):
+      return cameFrom
+
+    explored.append(current)
+
+    for successor in problem.getSuccessors(current):
+      if not successor[0] in explored:
+        successorCameFrom = list(cameFrom)
+        successorCameFrom.append(successor[1])
+        queue.push((successor[0], successorCameFrom))
   print "Unable to find any path to the goal!"
   return []
       
 def uniformCostSearch(problem):
   queue = util.PriorityQueue()
-  queue.push(problem.getStartState(), 0)
-  children = {}
-  visited = {}
+  queue.push((problem.getStartState(), []), 0)
+  explored = []
   while not queue.isEmpty():
-    current = queue.pop()
-    if not current in visited:
-      visited[current] = True
-      for successor in problem.getSuccessors(current):
-        if not successor[0] in visited:
-          children[successor[0]] = (current, successor[1])
-        queue.push(successor[0], successor[2])
-        if problem.isGoalState(successor[0]):
-          return retracePath(children, successor[0])
+    current, cameFrom = queue.pop()
+
+    if problem.isGoalState(current):
+      return cameFrom
+
+    explored.append(current)
+
+    for successor in problem.getSuccessors(current):
+      if not successor[0] in explored:
+        successorCameFrom = list(cameFrom)
+        successorCameFrom.append(successor[1])
+        queue.push((successor[0], successorCameFrom), problem.getCostOfActions(successorCameFrom))
   print "Unable to find any path to the goal!"
   return []
 
