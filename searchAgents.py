@@ -277,13 +277,11 @@ class CornersProblem(search.SearchProblem):
     self._expanded = 0 # Number of search nodes expanded
 
   def getStartState(self):
-    return (self.startingPosition, [])
+    # Keep track of the corners we have yet to visit
+    return (self.startingPosition, tuple(self.corners))
     
   def isGoalState(self, state):
-    """Returns whether this search state is a goal state of the problem"""
-    if state[0] in self.corners and not state[0] in state[1]:
-      state[1].append(state[0])
-    return len(state[1]) == 4
+    return len(state[1]) == 0
 
   def getSuccessors(self, state):
     """
@@ -308,9 +306,9 @@ class CornersProblem(search.SearchProblem):
         nextLocation = (nextx, nexty)
         cost = 1
         if nextLocation in self.corners:
-          if not nextLocation in successorCornersVisited:
-            successorCornersVisited.append(nextLocation)
-        successors.append(((nextLocation, successorCornersVisited), action, cost))
+          if nextLocation in successorCornersVisited:
+            successorCornersVisited.remove(nextLocation)
+        successors.append(((nextLocation, tuple(successorCornersVisited)), action, cost))
       
     self._expanded += 1
     return successors
@@ -331,12 +329,11 @@ class CornersProblem(search.SearchProblem):
 
 def cornersHeuristic(state, problem):
   corners = problem.corners
-  walls = problem.walls
-  unvisited = list(filter(lambda x: x not in state[1], corners))
+  unvisited = list(state[1])
   distFn = util.manhattanDistance
   current = state[0]
   h = 0
-  while unvisited:
+  while len(unvisited) > 0:
     cost, corner = min(map(lambda x: (distFn(current, x), x), unvisited))
     unvisited.remove(corner)
     current = corner
