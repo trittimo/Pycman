@@ -144,26 +144,47 @@ def nullHeuristic(state, problem=None):
   """
   return 0
 
+def lowest(openSet, fScore):
+  from sys import maxint
+  lowestNode = None
+  lowestScore = maxint
+  for node in openSet:
+    if fScore[node] < lowestScore:
+      lowestNode = node
+      lowestScore = fScore[node]
+
+  return lowestNode
+
 def aStarSearch(problem, heuristic=nullHeuristic):
-  closedSet  = []
-  openSet = util.PriorityQueue()
-  start = problem.getStartState()
-  openSet.push((start, []), heuristic(start, problem))
-  while not openSet.isEmpty():
-    current, path = openSet.pop()
-
+  closedSet = []
+  openSet = []
+  openSet.append(problem.getStartState())
+  cameFrom = {}
+  gScore = {}
+  gScore[problem.getStartState()] = 0
+  fScore = {}
+  fScore[problem.getStartState()] = heuristic(problem.getStartState(), problem)
+  while len(openSet) > 0:
+    current = lowest(openSet, fScore)
     if problem.isGoalState(current):
-      return path
-
+      return retracePath(cameFrom, current)
+    openSet.remove(current)
     closedSet.append(current)
+    for successor in problem.getSuccessors(current):
+      neighbor = successor[0]
+      if neighbor in closedSet:
+        continue
+      neighborScore = gScore[current] + 1
+      if not (neighbor in openSet):
+        openSet.append(neighbor)
+      elif neighborScore >= gScore[neighbor]:
+        continue
 
-    for pos, move, cost in problem.getSuccessors(current):
-      if not pos in closedSet:
-        newPath = path + [move]
-        score = problem.getCostOfActions(newPath) + heuristic(pos, problem)
-        openSet.push((pos, newPath), score)
+      cameFrom[neighbor] = (current, successor[1])
+      gScore[neighbor] = neighborScore
+      fScore[neighbor] = gScore[neighbor] + heuristic(neighbor, problem)
 
-  print "Unable to find path!"
+  print "Unable to find solution!"
   return []
 
 # Abbreviations
