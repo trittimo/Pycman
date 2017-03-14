@@ -283,7 +283,7 @@ class CornersProblem(search.SearchProblem):
     """Returns whether this search state is a goal state of the problem"""
     if state[0] in self.corners and not state[0] in state[1]:
       state[1].append(state[0])
-    return all(corner in state[1] for corner in self.corners)
+    return len(state[1]) == 4
 
   def getSuccessors(self, state):
     """
@@ -300,12 +300,6 @@ class CornersProblem(search.SearchProblem):
     successors = []
     x, y = state[0]
     for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-      # Add a successor state to the successor list if the action is legal
-      # Here's a code snippet for figuring out whether a new position hits a wall:
-      #   x,y = currentPosition
-      #   dx, dy = Actions.directionToVector(action)
-      #   nextx, nexty = int(x + dx), int(y + dy)
-      #   hitsWall = self.walls[nextx][nexty]
       successorCornersVisited = list(state[1])
       dx, dy = Actions.directionToVector(action)
       nextx, nexty = int(x + dx), int(y + dy)

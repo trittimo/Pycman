@@ -104,17 +104,16 @@ def breadthFirstSearch(problem):
   explored = []
   while not queue.isEmpty():
     current, cameFrom = queue.pop()
-
-    if problem.isGoalState(current):
-      return cameFrom
-
-    explored.append(current)
-
-    for successor in problem.getSuccessors(current):
-      if not successor[0] in explored:
+    for pos, move, cost in problem.getSuccessors(current):
+      if problem.isGoalState(pos):
+        cameFrom.append(move)
+        return cameFrom
+      if not pos in explored:
         successorCameFrom = list(cameFrom)
-        successorCameFrom.append(successor[1])
-        queue.push((successor[0], successorCameFrom))
+        successorCameFrom.append(move)
+        queue.push((pos, successorCameFrom))
+        explored.append(pos)
+
   print "Unable to find any path to the goal!"
   return []
       
