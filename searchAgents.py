@@ -344,12 +344,16 @@ def cornersHeuristic(state, problem):
   """
   corners = problem.corners # These are the corner coordinates
   walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
-  unvisited = filter(lambda x: x not in state[1], corners)
-
+  unvisited = list(filter(lambda x: x not in state[1], corners))
   distFn = util.manhattanDistance
   current = state[0]
-
-  return sum(map(lambda x: distFn(current, x), unvisited))
+  h = 0
+  while unvisited:
+    cost, corner = min(map(lambda x: (distFn(current, x), x), unvisited))
+    unvisited.remove(corner)
+    h += cost
+  
+  return h
 
   # closest = unvisited[0]
   # closestDist = distFn(current, closest)
