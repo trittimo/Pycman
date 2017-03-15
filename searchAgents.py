@@ -431,10 +431,33 @@ def foodHeuristic(state, problem):
 
   position, foodGrid = state
   
+  # pq = problem.heuristicInfo["pq"] if "pq" in problem.heuristicInfo else util.PriorityQueue()
+  # dist = problem.heuristicInfo["dist"] if "dist" in problem.heuristicInfo else {}
+  
+  # h = 0
+
+  # food = foodGrid.asList()
+  # for v in food:
+  #   if not v in dist:
+  #     dist[v] = float("inf")
+  #   while not pq.isEmpty():
+  #     current = pq.pop()
+  #     for neighbor in current.
+
+  
+  # costs = {}
+  # for current in food:
+  #   if current in problem.heuristicInfo:
+  #     costs[current] = problem.heuristicInfo
+  #   else:
+  #     costs[current] = float("inf")
+
+
+
   # add pieces of food
   # done if empty
   # minimum spanning tree with prim's algorithm
-  
+
 
   return 0
   
@@ -462,9 +485,8 @@ class ClosestDotSearchAgent(SearchAgent):
     food = gameState.getFood()
     walls = gameState.getWalls()
     problem = AnyFoodSearchProblem(gameState)
+    return search.ucs(problem)
 
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
   
 class AnyFoodSearchProblem(PositionSearchProblem):
   """
@@ -493,14 +515,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
     self._visited, self._visitedlist, self._expanded = {}, [], 0
     
   def isGoalState(self, state):
-    """
-    The state is Pacman's position. Fill this in with a goal test
-    that will complete the problem definition.
-    """
-    x,y = state
-    
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    return state in self.food.asList()
 
 ##################
 # Mini-contest 1 #
