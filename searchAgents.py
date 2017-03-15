@@ -428,8 +428,14 @@ def foodHeuristic(state, problem):
     problem.heuristicInfo['wallCount'] = problem.walls.count()
   Subsequent calls to this heuristic can access problem.heuristicInfo['wallCount']
   """
+
   position, foodGrid = state
-  "*** YOUR CODE HERE ***"
+  
+  # add pieces of food
+  # done if empty
+  # minimum spanning tree with prim's algorithm
+  
+
   return 0
   
 class ClosestDotSearchAgent(SearchAgent):
